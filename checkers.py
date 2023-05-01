@@ -1,0 +1,45 @@
+import pygame
+from Checkers.constants import WIDTH, HEIGHT, TILE
+from Checkers.game import Game
+
+
+FPS = 60
+WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
+
+pygame.display.set_caption('ISTA 450 - Final Project - Francisco Figueroa')
+
+def mouse_pos(pos):
+    x,y = pos
+    row = y // TILE
+    col = x // TILE
+
+    return int(row), int(col)
+
+
+def main():
+    active = True
+    clock = pygame.time.Clock()
+    game = Game(WINDOW)
+    print(game.board)
+    while active:
+        clock.tick(FPS)
+
+        if game.winner() != None:
+            print(game.winner())
+            active = False
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                active = False
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                row, col = mouse_pos(pos)
+                game.select(row, col)
+                print(str(game.board))
+
+        game.update()
+    
+    pygame.quit()
+
+main()
