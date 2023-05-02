@@ -63,3 +63,7 @@ class Game:
             self.turn = WHITE
         else:
             self.turn = RED
+
+
+    # what should be the heuristic evaluation??
+        # main idea: (num of pawns{for agent} + num of kings{for agent}) - num of vulnerable pieces
