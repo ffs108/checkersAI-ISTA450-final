@@ -1,6 +1,7 @@
 import pygame
-from Checkers.constants import WIDTH, HEIGHT, TILE
+from Checkers.constants import WIDTH, HEIGHT, TILE, WHITE, RED
 from Checkers.game import Game
+from AI.alphaBeta import abControl
 
 
 FPS = 60
@@ -12,7 +13,6 @@ def mouse_pos(pos):
     x,y = pos
     row = y // TILE
     col = x // TILE
-
     return int(row), int(col)
 
 
@@ -23,6 +23,10 @@ def main():
     print(game.board)
     while active:
         clock.tick(FPS)
+
+        if game.get_turn() == WHITE:
+            action, value = abControl(game.cur_state(), 2, game)
+            game.agent_move(action)
 
         if game.winner() != None:
             print(game.winner())

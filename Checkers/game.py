@@ -1,4 +1,5 @@
 import pygame
+import sys
 from .constants import RED, WHITE, GREEN, TILE
 from .board import Board
 
@@ -18,7 +19,7 @@ class Game:
         self.turn = RED
         self.valid_moves = {}
 
-    def winner(self):
+    def winner(self): #this is the isWin() equivalent
         return self.board.winner()
 
     def reset(self):
@@ -65,5 +66,29 @@ class Game:
             self.turn = RED
 
 
+    def get_turn(self):
+        return self.turn
+
+
+    def cur_state(self):
+        return self.board
+    
+    def agent_move(self, board):
+        self.board = board
+        self.change_turn()
+    
+
     # what should be the heuristic evaluation??
-        # main idea: (num of pawns{for agent} + num of kings{for agent}) - num of vulnerable pieces
+        # main idea: (num of pawns{for agent} + num of kings{for agent}) - num of vulnerable pieces and incorporate control of mid. of board
+        # can go simpler for αβ and make it: num of pieces{for agent} + num of kings{for agent} - 
+
+    def alpha_beta_evaluation(self):
+        #aise "not implemented yet"
+        whites = self.board.get_white_preformance()
+        pieces_alive = whites[0]
+        kings = whites[1]
+        enenmies = self.board.get_red_preformace()[0]
+        return (pieces_alive + kings) - enenmies
+
+
+

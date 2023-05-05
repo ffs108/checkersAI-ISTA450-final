@@ -65,9 +65,9 @@ class Board:
                     self.white_alive -= 1
     
     def winner(self):
-        if self.red_alive == 0:
+        if self.red_alive <= 0:
             return WHITE
-        elif self.white_alive == 0:
+        elif self.white_alive <= 0:
             return RED
         return None
     
@@ -77,8 +77,8 @@ class Board:
         right = piece.col + 1
         row = piece.row
         if piece.color == RED or piece.isKing:
-            moves.update(self.traverse_left(row - 1, max(row - 3, -1), - 1, piece.color, left))
-            moves.update(self.traverse_right(row - 1, max(row - 3, -1), - 1, piece.color, right))
+            moves.update(self.traverse_left(row - 1, max(row - 3, -1), -1, piece.color, left))
+            moves.update(self.traverse_right(row - 1, max(row - 3, -1), -1, piece.color, right))
         if piece.color == WHITE or piece.isKing:
             moves.update(self.traverse_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
             moves.update(self.traverse_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
@@ -104,7 +104,7 @@ class Board:
                     if step == -1:
                         row = max(r - 3, 0)
                     else:
-                        row = min(r+3, ROWS)
+                        row = min(r + 3, ROWS)
                     moves.update(self.traverse_left(r + step, row, step, color, left - 1, skipped=last))
                     moves.update(self.traverse_right(r + step, row, step, color, left + 1, skipped=last))
                 break
@@ -123,7 +123,6 @@ class Board:
         for r in range(start, stop, step):
             if right >= COLS:
                 break
-            
             current = self.board[r][right]
             if current == None:
                 if skipped and not last:
@@ -132,7 +131,6 @@ class Board:
                     moves[(r,right)] = last + skipped
                 else:
                     moves[(r, right)] = last
-                
                 if last:
                     if step == -1:
                         row = max(r - 3, 0)
@@ -145,10 +143,23 @@ class Board:
                 break
             else:
                 last = [current]
-
             right += 1
-        
         return moves
+    
+    def get_all_pieces_of_color(self, chosenColor):
+        retval = []
+        for row in self.board:
+            for piece in row:
+                if piece is not None and piece.color == chosenColor:
+                    retval.append(piece)
+        return retval
+    
+    def get_red_preformace(self):
+        return self.red_alive, self.red_kings
+    
+    def get_white_preformance(self):
+        return self.white_alive, self.white_kings
+
     
     def __str__(self):
         retval = '\nCURRENT STATE: Red Alive - ' + str(self.red_alive) + ' || White Alive - ' + str(self.white_alive)

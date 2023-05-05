@@ -1,8 +1,8 @@
 import pygame 
 
 # pygame window proportions
-WIDTH = 800
-HEIGHT = 800
+WIDTH = 500
+HEIGHT = 500
 
 # checkers board rows and columns
 ROWS = 8
