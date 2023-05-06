@@ -20,13 +20,22 @@ def main():
     active = True
     clock = pygame.time.Clock()
     game = Game(WINDOW)
-    print(game.board)
     while active:
         clock.tick(FPS)
 
         if game.get_turn() == WHITE:
             action, value = abControl(game.cur_state(), 2, game)
+            pygame.time.wait(1000)
             game.agent_move(action)
+
+
+        # if game.get_turn() == RED:
+        #     pygame.time.wait(2000)
+        #     action, value = abControl(game.cur_state(), 2, game, color=RED)
+        #     game.agent_move(action)
+            
+
+        #print(game.cur_state().winner())
 
         if game.winner() != None:
             print(game.winner())

@@ -87,8 +87,12 @@ class Game:
         whites = self.board.get_white_preformance()
         pieces_alive = whites[0]
         kings = whites[1]
-        enenmies = self.board.get_red_preformace()[0]
-        return (pieces_alive + kings) - enenmies
+        whiteMidControl = self.board.get_white_mid_control()
+        redMidControl = self.board.get_red_mid_control()
+        reds = self.board.get_red_preformace()
+        redPawns = reds[0]
+        redKings = reds[1]
+        return ((pieces_alive + kings) * whiteMidControl) - ((redPawns + redKings) * redMidControl * redPawns)
 
 
 

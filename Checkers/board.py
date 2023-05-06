@@ -8,8 +8,8 @@ class Board:
         self.board = [] #2d array
         self.create_board()
         self.selected_piece = None
-        self.red_alive = 12
-        self.white_alive = 12
+        self.red_alive = 5
+        self.white_alive = 5
         self.red_kings = 0
         self.white_kings = 0
 
@@ -24,9 +24,9 @@ class Board:
             self.board.append([])
             for col in range(COLS):
                 if col % 2 == ((row + 1) % 2):
-                    if row < 3:
+                    if row < 2: #3 for 8x8
                         self.board[row].append(Piece(row, col, WHITE))
-                    elif row > 4:
+                    elif row > 2: #was 4 for 8x8
                         self.board[row].append(Piece(row, col, RED))
                     else:
                         self.board[row].append(None)
@@ -65,14 +65,15 @@ class Board:
                     self.white_alive -= 1
     
     def winner(self):
-        if self.red_alive <= 0:
-            return WHITE
-        elif self.white_alive <= 0:
-            return RED
+        retval = 'The winner is: '
+        if self.red_alive == 0:
+            return retval + 'WHITE'
+        elif self.white_alive == 0:
+            return retval + 'RED'
         return None
     
     def valid_moves(self, piece):
-        moves = {}
+        moves = dict()
         left = piece.col - 1
         right = piece.col + 1
         row = piece.row
@@ -159,7 +160,20 @@ class Board:
     
     def get_white_preformance(self):
         return self.white_alive, self.white_kings
+    
+    def get_white_mid_control(self):
+        count = 0
+        for piece in self.board[2]: 
+            if piece is not None:
+                count += 1 if piece.color == WHITE else count
+        return count
 
+    def get_red_mid_control(self):
+        count = 0
+        for piece in self.board[2]: 
+            if piece is not None:
+                count += 1 if piece.color == RED else count
+        return count
     
     def __str__(self):
         retval = '\nCURRENT STATE: Red Alive - ' + str(self.red_alive) + ' || White Alive - ' + str(self.white_alive)

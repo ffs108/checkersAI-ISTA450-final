@@ -5,8 +5,8 @@ WIDTH = 500
 HEIGHT = 500
 
 # checkers board rows and columns
-ROWS = 8
-COLS = 8
+ROWS = 5
+COLS = 5
 
 # size of each tile in checkers board
 TILE = WIDTH/COLS
