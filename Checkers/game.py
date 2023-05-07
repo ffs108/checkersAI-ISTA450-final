@@ -34,11 +34,19 @@ class Game:
         else:
             return -1
         
-    def is_ternmina(self):
+    def is_ternminal(self):
         if self.board.red_alive == 0 or self.board.white_alive == 0:
             return True
         else:
             return False
+        
+    def reward(self):
+        if self.is_terminal() and self.is_red_winning() == 1:
+            return 10
+        elif self.is_termina() and self.is_white_winning == 1:
+            return -10
+        else:
+            return 0
         
     def reset(self):
         self._init()

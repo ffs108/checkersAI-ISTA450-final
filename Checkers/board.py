@@ -243,14 +243,20 @@ class Board:
         return False
     
     def integer_repr(self):
-        int_repr = copy.deepcopy(self.board)
-        for piece in int_repr:
-            if piece is None:
-                piece = 0
-            elif piece.color == WHITE:
-                piece = 1
-            else:
-                piece = -1
+        #int_repr = copy.deepcopy(self.board)
+        int_repr = []
+        for row in range(ROWS):
+            rows = []
+            for col in range(COLS):
+                piece = self.board[row][col]
+                if piece is None:
+                    piece = 0
+                elif piece.color == WHITE:
+                    piece = 1
+                else:
+                    piece = -1
+                rows.append(piece)
+            int_repr.append(rows)
         return int_repr
 
 
