@@ -48,9 +48,7 @@ def all_states(board, white_pieces, red_pieces):
 
 class deepQAgent():
 
-    board = Board()
-
-    def __init__(self, game, alpha, gamma, epsilon, color):
+    def __init__(self, game, alpha=0.1, gamma=0.9, epsilon=0.3, color=RED):
         self.game = game
         self.board = self.game.board
         self.alpha = alpha #learn rate
@@ -61,16 +59,19 @@ class deepQAgent():
         self.prev_action = None
         #self.policy = self.get_policy()
         #self.board_flat = [piece for row in self.board for piece in row]
-        self.n_network = QNeuralNetwork()
+        self.n_network = QNeuralNetwork(5,25,5)
         
 
     def get_action(self, board_state, valid_actions):
+        nboard_state = board_state.integer_repr()
+        #print(nboard_state)
         if random.random() < self.epsilon:
-            return random.choice(valid_actions) # valid_actions sshould be self.getSuccessorsAndActions()
+            return random.choice(valid_actions[0]) # valid_actions sshould be self.getSuccessorsAndActions()
         else:
-            qVals = self.n_network(torch.FloatTensor(board_state).unsqueeze(0))#board_state = torch.tensor(board_state, dtype=torch.float).unsqueeze(0)
+            qVals = self.n_network(torch.FloatTensor(nboard_state).unsqueeze(0))#board_state = torch.tensor(board_state, dtype=torch.float).unsqueeze(0)
             qVals = qVals.detach().numpy()[0]
-            valid_Qs = [qVals[action] for action in valid_actions]
+            print(qVals)
+            valid_Qs = [qVals[i] for i in range(len(valid_actions))]
             if len(valid_Qs) == 0:
                 return self.get_policy()
             else:
@@ -86,7 +87,7 @@ class deepQAgent():
 
             qVals = self.n_network(torch.FloatTensor(self.prev_state).unsqueeze(0))
             qVals = qVals.detach().numpy()[0]
-            valid_qVals = [qVals[action] for action in valid_actions]
+            valid_qVals = [qVals[i] for i in range(len(valid_actions))]
             if len(valid_qVals) == 0:
                 max_qvalue = 0
             else:
@@ -104,19 +105,19 @@ class deepQAgent():
             self.prev_state = None
             self.prev_action = None
         else:
-            self.prev_state = state
-            self.prev_action = self.get_action(state, valid_actions)
+            self.prev_state = state.integer_repr()
+            self.prev_action = self.get_action(state.integer_repr(), valid_actions)
 
             
     def get_policy(self): #rule based policy
         possible_actions = self.getSuccessorsAndActions()
         for state_action in possible_actions: #rule 1: we want to prioritize aggressive play
             if self.board.is_capture_for_red(state_action[0]):
-                return state_action[1]
+                return state_action[0]
         for state_action in possible_actions: #rule 2: we want to enphasize getting pawns -> kings
             if self.board.is_kinging_for_red(state_action[0]):
-                return state_action[1]
-        return (random.choice(possible_actions))[1] # else, most likely in beginning turns, just make a move
+                return state_action[0]
+        return (random.choice(possible_actions))[0] # else, most likely in beginning turns, just make a move
         
     # def epsilon_greed_factor(self):
     #     if random.uniform(0.0, 1.0) > self.epsilon:
