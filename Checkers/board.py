@@ -1,4 +1,5 @@
 import pygame
+import copy
 from .constants import *
 
 
@@ -12,6 +13,8 @@ class Board:
         self.white_alive = 5
         self.red_kings = 0
         self.white_kings = 0
+        self.captures_for_red = 0
+        self.captures_for_white = 0
 
     def draw_tiles(self, window):
         window.fill(BLACK)
@@ -61,9 +64,18 @@ class Board:
             if piece is not None:
                 if piece.color == RED:
                     self.red_alive -= 1
+                    self.captures_for_white += 1
                 else:
                     self.white_alive -= 1
+                    self.captures_for_red += 1
     
+    def clear_board(self):
+        for row in range(ROWS):
+            for col in range(COLS):
+                if self.board[row][col] is not None:
+                    self.board[row][col] = None
+                else: continue
+
     def winner(self):
         retval = 'The winner is: '
         if self.red_alive == 0:
@@ -71,6 +83,14 @@ class Board:
         elif self.white_alive == 0:
             return retval + 'RED'
         return None
+    
+    def cur_winner(self):
+        if self.red_alive > self.white_alive:
+            return 'RED'
+        elif self.white_alive > self.red_alive:
+            return 'WHITE'
+        else:
+            return 0
     
     def valid_moves(self, piece):
         moves = dict()
@@ -84,6 +104,43 @@ class Board:
             moves.update(self.traverse_left(row + 1, min(row + 3, ROWS), 1, piece.color, left))
             moves.update(self.traverse_right(row + 1, min(row + 3, ROWS), 1, piece.color, right))
         return moves
+    
+
+    def all_valid_move_by_color(self, color):
+        if color == WHITE:
+            return self.all_valid_moves_white()
+        else:
+            return self.all_valid_moves_red()
+
+    def all_valid_moves_white(self):
+        moves = list()
+        for row in range(ROWS):
+            for col in range(COLS):
+                piece = self.get_piece(row,col)
+                if piece is not None and piece.color == WHITE:
+                    moves.append(self.valid_moves(piece))
+        #print(moves)
+        if len(moves) == 0:
+            self.white_alive == 0
+
+    def all_valid_moves_red(self):
+        moves = list()
+        for row in range(ROWS):
+            for col in range(COLS):
+                piece = self.get_piece(row,col)
+                if piece is not None and piece.color == RED:
+                    moves.append(self.valid_moves(piece))
+        #print(moves)
+        if len(moves) == 0:
+            self.white_alive == 0
+
+
+    def proposedTransition(self, piece, action, skip):
+        self.move(piece, action[0], action[1])
+        if skip:
+            self.remove(skip)
+        return self.board
+
     
     def traverse_left(self, start, stop, step, color, left, skipped=[]):
         moves = {}
@@ -175,6 +232,29 @@ class Board:
                 count += 1 if piece.color == RED else count
         return count
     
+    def is_capture_for_red(self, other):
+        if self.white_alive > other.white_alive:
+            return True
+        return False
+    
+    def is_kinging_for_red(self, other):
+        if self.red_kings < other.red_kings:
+            return True
+        return False
+    
+    def integer_repr(self):
+        int_repr = copy.deepcopy(self.board)
+        for piece in int_repr:
+            if piece is None:
+                piece = 0
+            elif piece.color == WHITE:
+                piece = 1
+            else:
+                piece = -1
+        return int_repr
+
+
+
     def __str__(self):
         retval = '\nCURRENT STATE: Red Alive - ' + str(self.red_alive) + ' || White Alive - ' + str(self.white_alive)
         retval += '\n________________________________________________ \n\n'
@@ -183,10 +263,16 @@ class Board:
                 if self.board[row][col] is not None:
                     retval += self.board[row][col].__repr__()
                 else:
-                    retval += ' . '
+                    retval += ' .  '
             retval += '\n'
         retval += '\n________________________________________________ \n'
         return retval
+    
+    def __eq__(self, other):
+        if str(self) == str(other):
+            return True
+        else:
+            return False
 
 
 

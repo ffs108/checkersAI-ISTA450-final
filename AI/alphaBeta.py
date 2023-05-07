@@ -11,7 +11,10 @@ def abControl(gameState, depth, gameObj, color=WHITE):
     cur_depth = 0
     agent = 0
     agentNum = 1
-    return alphaBeta(agent, agentNum, gameState, alpha, beta, cur_depth, depth, color, gameObj)
+    alphaBetaVar = alphaBeta(agent, agentNum, gameState, alpha, beta, cur_depth, depth, color, gameObj)
+    if alphaBetaVar == (None,None):
+        gameObj.white_agent_life_check()
+    return alphaBetaVar
 
 def alphaBeta(agent, agentNum, gameState, alpha, beta, cur_depth, depth, color, gameObj):
     if agent >= agentNum:
@@ -36,8 +39,6 @@ def alphaBeta(agent, agentNum, gameState, alpha, beta, cur_depth, depth, color, 
             if alpha > beta:#prune point
                 break
     return best_action, cur_optimal
-
-
 
 
 def getSuccessors(board, color, gameObj):

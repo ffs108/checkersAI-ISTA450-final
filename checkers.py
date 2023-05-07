@@ -15,30 +15,33 @@ def mouse_pos(pos):
     col = x // TILE
     return int(row), int(col)
 
+def console_out(curState, newState):
+    if curState != newState:
+        print(newState)
+        #return newState()
+
 
 def main():
     active = True
     clock = pygame.time.Clock()
     game = Game(WINDOW)
     while active:
+        currentState = game.cur_state()
+        console_out(currentState, game.cur_state())
         clock.tick(FPS)
 
         if game.get_turn() == WHITE:
-            action, value = abControl(game.cur_state(), 2, game)
+            game.white_agent_life_check()
+            action, value = abControl(currentState, 2, game)
+            if action is None:
+                game.alphabeta_agent_concede()
+                active = False
+                break
             pygame.time.wait(1000)
             game.agent_move(action)
 
-
-        # if game.get_turn() == RED:
-        #     pygame.time.wait(2000)
-        #     action, value = abControl(game.cur_state(), 2, game, color=RED)
-        #     game.agent_move(action)
-            
-
-        #print(game.cur_state().winner())
-
         if game.winner() != None:
-            print(game.winner())
+            #print(game.winner())
             active = False
 
         for event in pygame.event.get():
@@ -49,10 +52,12 @@ def main():
                 pos = pygame.mouse.get_pos()
                 row, col = mouse_pos(pos)
                 game.select(row, col)
-                print(str(game.board))
+        
+        console_out(currentState, game.cur_state())
 
         game.update()
-    
+    print(game.cur_state())
+    print(game.winner())
     pygame.quit()
 
 main()

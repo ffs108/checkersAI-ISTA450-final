@@ -22,6 +22,24 @@ class Game:
     def winner(self): #this is the isWin() equivalent
         return self.board.winner()
 
+    def is_red_winning(self):
+        if self.board.cur_winner == 'RED':
+            return 1
+        else:
+            return -1
+        
+    def is_white_winning(self):
+        if self.board.cur_winner == 'WHITE':
+            return 1
+        else:
+            return -1
+        
+    def is_ternmina(self):
+        if self.board.red_alive == 0 or self.board.white_alive == 0:
+            return True
+        else:
+            return False
+        
     def reset(self):
         self._init()
 
@@ -78,6 +96,12 @@ class Game:
         self.change_turn()
     
 
+    def alphabeta_agent_concede(self):
+        self.board.white_alive = 0
+        self.winner()
+
+    def white_agent_life_check(self):
+        self.board.all_valid_moves_white()
     # what should be the heuristic evaluation??
         # main idea: (num of pawns{for agent} + num of kings{for agent}) - num of vulnerable pieces and incorporate control of mid. of board
         # can go simpler for αβ and make it: num of pieces{for agent} + num of kings{for agent} - 
