@@ -6,6 +6,8 @@ from AI.deepQLearning import deepQAgent
 from AI.geneticAgent import GeneticAgent
 
 
+#use of pygame checkers visualization thanks to "techbytim" - link to this in attached paper
+
 FPS = 60
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -27,7 +29,7 @@ def main():
     #deepLearningAgent = deepQAgent()
     genAgent = GeneticAgent(RED, 10)
     genAgent.train()
-    print(genAgent.population)
+    #print(genAgent.population)
     active = True
     clock = pygame.time.Clock()
     game = Game(WINDOW)

@@ -31,7 +31,7 @@ def alphaBeta(agent, agentNum, gameState, alpha, beta, cur_depth, depth, color, 
                     cur_optimal = resulting_score
                     best_action = successor
                     alpha = max(alpha, resulting_score) # alpha = MAX(α, util val)
-            else: #player or deepQ
+            else: #player or deepQ/genetic
                 if cur_optimal is None or resulting_score < cur_optimal:
                     cur_optimal = resulting_score
                     best_action = successor

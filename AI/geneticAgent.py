@@ -19,13 +19,6 @@ class GeneticAgent:
         self.generation = 0
         self.population = [Individual([random.random()]) for i in range(self.pop_size)]
         self.cur_Indiv = random.choice(self.population)
-
-    # def select_action(self, state):
-    #     rewards = [self._generate_policy(state) for policy in self.population]
-    #     best_policy = max(zip(self.population, rewards), key=lambda x: x[1])[0]
-    #     action = best_policy[0] #should be a Board object or 2d array
-    #     self.population = self._population_evolution()
-    #     return action
     
     def best_action(self, state):
         features = state.get_features()
@@ -67,20 +60,11 @@ class GeneticAgent:
                 if game.get_turn() == RED:
                     action = self.best_action(currentState)
                     game.agent_move(action)
-            if game.winner() == 'RED':
+            if game.winner() == 'The winner is: RED':
                 wins += 1
             games += 1
+        if self.generation < NUM_GAMES : self.train()
         return wins/games
-
-    # def _population_evolution(self):
-    #     new_pop = []
-    #     for i in range(self.pop_size):
-    #         parent1 = self.gauntlet_select()
-    #         parent2 = self.gauntlet_select()
-    #         child = self._breed(parent1, parent2)
-    #         child = self._mutate(child)
-    #         new_pop.append(child)
-    #     return new_pop
 
     def _breed(self, parent1, parent2):
         pass
@@ -105,7 +89,7 @@ class GeneticAgent:
     
     def gauntlet_select(self):
         participants = random.sample(self.population, TOURN_SIZE)
-        winner = max(participants, key=lambda x: x.fitness)
+        winner = max(participants, key=lambda x: x.weights)
         return winner
     
     def reassess_fit(self, fitness_measure):
@@ -119,7 +103,7 @@ class Individual:
         self.fitness = None
         
     def __repr__(self):
-        return f"Individual: {self.weights}; Fitness: {self.fitness}"
+        return "{Individual: " + self.weights + "; Fitness: " + self.fitness + "}"
     
     def update_fit(self, newfit):
         self.fitness = newfit
@@ -141,7 +125,6 @@ class Individual:
         weights = copy.deepcopy(self.weights)
         for i in range(len(weights)):
             if random.random() < MUTATION_RATE:
-                print(weights)
                 weights[i] += random.uniform(-0.1, 0.1)
         return Individual(weights)
 
