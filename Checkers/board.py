@@ -36,6 +36,22 @@ class Board:
                 else:
                     self.board[row].append(None)
     
+    def get_features(self):
+        features = []
+        features.append(self.red_alive);features.append(self.white_alive)
+        pos_moves = 0
+        for row in range(ROWS):
+            for col in range(COLS):
+                piece = self.board[row][col]
+                if piece is not None:
+                    pos_moves += len(self.valid_moves(piece).values())
+                else:
+                    continue
+        features.append(pos_moves)
+        return pos_moves
+
+
+
     def draw(self, window):
         self.draw_tiles(window)
         for row in range(ROWS):
@@ -259,8 +275,6 @@ class Board:
             int_repr.append(rows)
         return int_repr
 
-
-
     def __str__(self):
         retval = '\nCURRENT STATE: Red Alive - ' + str(self.red_alive) + ' || White Alive - ' + str(self.white_alive)
         retval += '\n________________________________________________ \n\n'
@@ -279,6 +293,7 @@ class Board:
             return True
         else:
             return False
+
 
 
 

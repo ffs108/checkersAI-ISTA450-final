@@ -3,6 +3,7 @@ from Checkers.constants import WIDTH, HEIGHT, TILE, WHITE, RED
 from Checkers.game import Game
 from AI.alphaBeta import abControl
 from AI.deepQLearning import deepQAgent
+from AI.geneticAgent import GeneticAgent
 
 
 FPS = 60
@@ -21,12 +22,12 @@ def console_out(curState, newState):
         print(newState)
         #return newState()
 
-#def trainng(agent, episodes):
-    #for episode in range(episodes):
-
 
 def main():
-    deepLearningAgent = deepQAgent()
+    #deepLearningAgent = deepQAgent()
+    genAgent = GeneticAgent(RED, 10)
+    genAgent.train()
+    print(genAgent.population)
     active = True
     clock = pygame.time.Clock()
     game = Game(WINDOW)
@@ -42,6 +43,11 @@ def main():
                 game.alphabeta_agent_concede()
                 active = False
                 break
+            pygame.time.wait(1000)
+            game.agent_move(action)
+
+        if game.get_turn() == RED:
+            action = genAgent.best_action(game.cur_state())
             pygame.time.wait(1000)
             game.agent_move(action)
 

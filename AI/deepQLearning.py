@@ -24,23 +24,24 @@ class QNeuralNetwork(nn.Module):
 
 
 def all_states(board, white_pieces, red_pieces):
+    print(board)
     if white_pieces == 0 and red_pieces == 0:
         return[board]
     permutations = list()
-    if white_pieces > 0:
+    if white_pieces > 0 and white_pieces <= 5:
         for row in range(ROWS):
             for col in range(COLS):
-                if (row + col) % 2 == 1 and board[row][col] == None:
+                if (row + col) % 2 == 1 and board.board[row][col] == None:
                     new_board = copy.deepcopy(board)
-                    new_board[row][col] = Piece(row, col, WHITE)
-                    permutations.extend(all_states(new_board, white_pieces - 1, red_pieces))
-    if red_pieces > 0:
+                    new_board.board[row][col] = Piece(row, col, WHITE)
+                    permutations.append(all_states(new_board, white_pieces - 1, red_pieces))
+    if red_pieces > 0 and red_pieces <= 5:
         for row in range(ROWS):
             for col in range(COLS):
-                if (row + col) % 2 == 1 and board[row][col] == None:
+                if (row + col) % 2 == 1 and board.board[row][col] == None:
                     new_board = copy.deepcopy(board)
-                    new_board[row][col] = Piece(row, col, RED)
-                    permutations.extend(all_states(new_board, white_pieces, red_pieces - 1))
+                    new_board.board[row][col] = Piece(row, col, RED)
+                    permutations.append(all_states(new_board, white_pieces, red_pieces - 1))
     return permutations
 
 
